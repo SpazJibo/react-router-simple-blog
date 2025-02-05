@@ -1,7 +1,16 @@
 import { type RouteConfig, index, route } from "@react-router/dev/routes";
+import { flatRoutes } from "@react-router/fs-routes";
 
-// Adding route as this is only way I get this to work.
-export default [
-  index("routes/home.tsx"),
-  route("blog/first-blog", "routes/blog/first-blog.mdx"),
-] satisfies RouteConfig;
+const routes = await flatRoutes({ rootDirectory: "routes/blog/" });
+// Adding my folder back in to flatRoutes
+const newRoutes = routes.map((route) => {
+  return {
+    id: route.id,
+    file: route.file,
+    path: "blog/" + route.path,
+    index: undefined,
+    caseSensitive: undefined,
+  };
+});
+
+export default [index("routes/home.tsx"), ...newRoutes] satisfies RouteConfig;
